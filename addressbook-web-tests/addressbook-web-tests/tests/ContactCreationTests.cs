@@ -16,5 +16,13 @@ namespace WebAddressbookTests
             contact.Lastname = "Ivanov";
             app.Contacts.Create(contact);            
         }
+
+        [Test]
+        public void EmptyContactCreationTest()
+        {
+            ContactData contact = new ContactData("");
+            contact.Lastname = "";
+            app.Contacts.Create(contact);
+        }
     }
 }

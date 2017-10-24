@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
+using NUnit.Framework;
 
 namespace WebAddressbookTests
 {
@@ -30,6 +31,25 @@ namespace WebAddressbookTests
             return this;
         }
 
+        public ContactHelper Modify(int p, ContactData newdata)
+        {
+            manager.Navigator.GoToHomePage();
+            InitContactModification(p);
+            FillContactForm(newdata);
+            SubmitContactModification(p);
+            ReturnToHomePage();
+
+            return this;
+        }
+
+        public ContactHelper Remove(int p)
+        {
+            manager.Navigator.GoToHomePage();
+            InitContactModification(p);
+            Delete();
+            return this;
+        }
+
         public ContactHelper FillContactForm(ContactData contact)
         {
             driver.FindElement(By.Name("firstname")).Clear();
@@ -42,6 +62,30 @@ namespace WebAddressbookTests
         public ContactHelper SubmitContactCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            return this;
+        }
+
+        public ContactHelper InitContactModification(int index)
+        {
+            driver.FindElement(By.XPath("(//img[@alt='Edit'])[" + index + "]")).Click();
+            return this;
+        }
+
+        public ContactHelper SubmitContactModification(int index)
+        {
+            driver.FindElement(By.XPath("(//input[@name='update'])[" + index + "]")).Click();
+            return this;
+        }
+
+        public ContactHelper Delete()
+        {
+            driver.FindElement(By.XPath("(//input[@name='update'])[3]")).Click();
+            return this;
+        }
+
+        public ContactHelper ReturnToHomePage()
+        {
+            driver.FindElement(By.LinkText("home page")).Click();
             return this;
         }
     }
