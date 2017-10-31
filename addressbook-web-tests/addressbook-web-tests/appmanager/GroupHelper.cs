@@ -19,7 +19,6 @@ namespace WebAddressbookTests
         public GroupHelper Create(GroupData group)
         {
             manager.Navigator.GoToGroupsPage();
-
             InitGroupCreation();
             FillGroupForm(group);
             SubmitGroupCreation();
@@ -30,22 +29,34 @@ namespace WebAddressbookTests
         public GroupHelper Modify(int p, GroupData newdata)
         {
             manager.Navigator.GoToGroupsPage();
+            if (IsGroupNotExist())
+            {
+                Create(new GroupData("123"));
+            }
             SelectGroup(p);
             InitGroupModification();
             FillGroupForm(newdata);
             SubmitGroupModification();
             ReturnToGroupsPage();
-
             return this;
         }
 
         public GroupHelper Remove(int p)
         {
             manager.Navigator.GoToGroupsPage();
+            if (IsGroupNotExist())
+            {
+                Create(new GroupData("123"));
+            }
             SelectGroup(p);
             RemoveGroup();
             ReturnToGroupsPage();
             return this;
+        }
+
+        private bool IsGroupNotExist()
+        {
+            return (driver.FindElements(By.ClassName("group")) != null);
         }
 
         public GroupHelper InitGroupCreation()
@@ -56,12 +67,9 @@ namespace WebAddressbookTests
 
         public GroupHelper FillGroupForm(GroupData group)
         {
-            driver.FindElement(By.Name("group_name")).Clear();
-            driver.FindElement(By.Name("group_name")).SendKeys(group.Name);
-            driver.FindElement(By.Name("group_header")).Clear();
-            driver.FindElement(By.Name("group_header")).SendKeys(group.Header);
-            driver.FindElement(By.Name("group_footer")).Clear();
-            driver.FindElement(By.Name("group_footer")).SendKeys(group.Footer);
+            Type(By.Name("group_name"), group.Name);
+            Type(By.Name("group_header"), group.Header);
+            Type(By.Name("group_footer"), group.Footer);
             return this;
         }
 

@@ -28,12 +28,17 @@ namespace WebAddressbookTests
             InitContactCreation();
             FillContactForm(contact);
             SubmitContactCreation();
+            ReturnToHomePage();
             return this;
         }
 
         public ContactHelper Modify(int p, ContactData newdata)
         {
             manager.Navigator.GoToHomePage();
+            if (IsContactNotExist())
+            {
+                Create(new ContactData("ddddd"));
+            }
             InitContactModification(p);
             FillContactForm(newdata);
             SubmitContactModification(p);
@@ -45,6 +50,10 @@ namespace WebAddressbookTests
         public ContactHelper Remove(int p)
         {
             manager.Navigator.GoToHomePage();
+            if (IsContactNotExist())
+            {
+                Create(new ContactData("ddddd"));
+            }
             InitContactModification(p);
             Delete();
             return this;
@@ -52,10 +61,8 @@ namespace WebAddressbookTests
 
         public ContactHelper FillContactForm(ContactData contact)
         {
-            driver.FindElement(By.Name("firstname")).Clear();
-            driver.FindElement(By.Name("firstname")).SendKeys(contact.FirstName);
-            driver.FindElement(By.Name("lastname")).Clear();
-            driver.FindElement(By.Name("lastname")).SendKeys(contact.Lastname);
+            Type(By.Name("firstname"), contact.FirstName);
+            Type(By.Name("lastname"), contact.Lastname);
             return this;
         }
 
@@ -63,6 +70,13 @@ namespace WebAddressbookTests
         {
             driver.FindElement(By.Name("submit")).Click();
             return this;
+        }
+
+        private bool IsContactNotExist()
+        {
+            var b = driver.FindElements(By.Name("entry"));
+            var c = b.Count == 0;
+            return c;
         }
 
         public ContactHelper InitContactModification(int index)
