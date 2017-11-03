@@ -29,10 +29,6 @@ namespace WebAddressbookTests
         public GroupHelper Modify(int p, GroupData newdata)
         {
             manager.Navigator.GoToGroupsPage();
-            if (IsGroupNotExist())
-            {
-                Create(new GroupData("123"));
-            }
             SelectGroup(p);
             InitGroupModification();
             FillGroupForm(newdata);
@@ -44,18 +40,15 @@ namespace WebAddressbookTests
         public GroupHelper Remove(int p)
         {
             manager.Navigator.GoToGroupsPage();
-            if (IsGroupNotExist())
-            {
-                Create(new GroupData("123"));
-            }
             SelectGroup(p);
             RemoveGroup();
             ReturnToGroupsPage();
             return this;
         }
 
-        private bool IsGroupNotExist()
+        public bool IsGroupNotExist()
         {
+            manager.Navigator.GoToGroupsPage();
             return (driver.FindElements(By.ClassName("group")) != null);
         }
 

@@ -16,6 +16,11 @@ namespace WebAddressbookTests
             ContactData newData = new ContactData("Petya");
             newData.Lastname = "Petrov";
 
+            if (app.Contacts.IsContactNotExist())
+            {
+                app.Contacts.Create(new ContactData("ddddd"));
+            }
+
             app.Contacts.Modify(1, newData);
         }
     }
