@@ -67,12 +67,12 @@ namespace WebAddressbookTests
         public bool IsContactNotExist()
         {
             manager.Navigator.GoToHomePage();
-            return (driver.FindElements(By.ClassName("entry")) != null);
+            return driver.FindElements(By.XPath("(//tr[@name='entry'])")).Count == 0;
         }
 
         public ContactHelper InitContactModification(int index)
         {
-            driver.FindElement(By.XPath("(//img[@alt='Edit'])[" + index + "]")).Click();
+            driver.FindElement(By.XPath("(//img[@alt='Edit'])[" + (index + 1) + "]")).Click();
             return this;
         }
 
@@ -92,6 +92,29 @@ namespace WebAddressbookTests
         {
             driver.FindElement(By.LinkText("home page")).Click();
             return this;
+        }
+
+        public List<ContactData> GetContactList()
+        {
+            List<ContactData> contacts = new List<ContactData>();
+            manager.Navigator.GoToHomePage();
+            ICollection<IWebElement> elements = driver.FindElements(By.Name("entry"));
+            foreach (IWebElement element in elements)
+            {
+                var text = element.Text.Split();
+                ContactData contact;
+                if (text.Length == 2)
+                {
+                    contact = new ContactData(text[1]);
+                    contact.Lastname = text[0];
+                }
+                else
+                {
+                    contact = new ContactData(text[0]);
+                }
+                contacts.Add(contact);
+            }
+            return contacts;
         }
     }
 }
