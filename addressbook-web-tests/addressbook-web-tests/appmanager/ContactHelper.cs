@@ -61,6 +61,7 @@ namespace WebAddressbookTests
         public ContactHelper SubmitContactCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            contactCache = null;
             return this;
         }
 
@@ -78,13 +79,16 @@ namespace WebAddressbookTests
 
         public ContactHelper SubmitContactModification(int index)
         {
-            driver.FindElement(By.XPath("(//input[@name='update'])[" + index + "]")).Click();
+            driver.FindElement(By.XPath("(//input[@name='update'])[" + (index + 1) + "]")).Click();
+            contactCache = null;
             return this;
         }
 
         public ContactHelper Delete()
         {
             driver.FindElement(By.XPath("(//input[@name='update'])[3]")).Click();
+            contactCache = null;
+            manager.Navigator.GoToHomePage();
             return this;
         }
 
@@ -94,27 +98,39 @@ namespace WebAddressbookTests
             return this;
         }
 
+        private List<ContactData> contactCache = null;
+
         public List<ContactData> GetContactList()
         {
-            List<ContactData> contacts = new List<ContactData>();
-            manager.Navigator.GoToHomePage();
-            ICollection<IWebElement> elements = driver.FindElements(By.Name("entry"));
-            foreach (IWebElement element in elements)
+            if (contactCache == null)
             {
-                var text = element.Text.Split();
-                ContactData contact;
-                if (text.Length == 2)
+                contactCache = new List<ContactData>();
+                manager.Navigator.GoToHomePage();
+                ICollection<IWebElement> elements = driver.FindElements(By.Name("entry"));
+                foreach (IWebElement element in elements)
                 {
-                    contact = new ContactData(text[1]);
-                    contact.Lastname = text[0];
+                    var text = element.Text.Split();
+                    ContactData contact;
+                    if (text.Length == 2)
+                    {
+                        contact = new ContactData(text[1]);
+                        contact.Lastname = text[0];
+                    }
+                    else
+                    {
+                        contact = new ContactData(text[0]);
+                        contact.Lastname = "";
+                    }
+                    contact.Id = element.FindElement(By.TagName("input")).GetAttribute("value");
+                    contactCache.Add(contact);
                 }
-                else
-                {
-                    contact = new ContactData(text[0]);
-                }
-                contacts.Add(contact);
-            }
-            return contacts;
+            } 
+            return new List<ContactData>(contactCache);
+        }
+
+        public int GetContactCount()
+        {
+            return driver.FindElements(By.Name("entry")).Count;
         }
     }
 }
