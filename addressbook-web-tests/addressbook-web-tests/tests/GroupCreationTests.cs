@@ -13,7 +13,7 @@ namespace WebAddressbookTests
         [Test]
         public void GroupCreationTest()
         {
-            GroupData group = new GroupData("aaa");
+            GroupData group = new GroupData("Friends");
             group.Header = "ddd";
             group.Footer = "fff";
 

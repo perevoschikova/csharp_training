@@ -15,7 +15,7 @@ namespace WebAddressbookTests
         {
             if (app.Contacts.IsContactNotExist())
             {
-                app.Contacts.Create(new ContactData("ddddd"));
+                app.Contacts.Create(new ContactData("Fedor", "Fedorov"));
             }
             List<ContactData> oldContacts = app.Contacts.GetContactList();
 

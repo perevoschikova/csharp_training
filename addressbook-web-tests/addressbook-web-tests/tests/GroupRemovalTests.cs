@@ -15,7 +15,7 @@ namespace WebAddressbookTests
         {
             if (app.Groups.IsGroupNotExist())
             {
-                app.Groups.Create(new GroupData("123"));
+                app.Groups.Create(new GroupData("Work"));
             }
 
             List<GroupData> oldGroups = app.Groups.GetGroupList();
