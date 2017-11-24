@@ -34,12 +34,12 @@ namespace WebAddressbookTests
 
         public override int GetHashCode()
         {
-            return FirstName.GetHashCode();
+            return FirstName.GetHashCode() + LastName.GetHashCode();
         }
 
         public override string ToString()
         {
-            return "name=" + FirstName;
+            return "FirstName = " + FirstName + "\nLastName = " + LastName;
         }
 
         public int CompareTo(ContactData other)
