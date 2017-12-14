@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using LinqToDB.Mapping;
 
 namespace WebAddressbookTests
 {
+    [Table(Name = "addressbook")]
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
         private string allPhones;
@@ -58,8 +60,10 @@ namespace WebAddressbookTests
             return fullNameThis.CompareTo(fullNameOther);
         }
 
+        [Column(Name = "firstname")]
         public string FirstName { get; set; }
 
+        [Column(Name = "lastname")]
         public string LastName { get; set; }
 
         public string Address { get; set; }
@@ -76,7 +80,23 @@ namespace WebAddressbookTests
 
         public string Email3 { get; set; }
 
+        [Column(Name = "id"), PrimaryKey, Identity]
         public string Id { get; set; }
+
+        [Column(Name = "deprecated")]
+        public string Deprecated { get; set; }
+
+        public static List<ContactData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                List<ContactData> list = new List<ContactData>();
+                list = (from g in db.Contacts
+                        where g.Deprecated == "0000-00-00 00:00:00"
+                        select g).ToList();                
+                return list;
+            }
+        }
 
         public string AllPhones
         {
@@ -198,6 +218,16 @@ namespace WebAddressbookTests
                 phones += "W: " + WorkPhone + "\r\n";
             }
             return phones + "\r\n";
+        }
+
+        public List<GroupData> GetGroups()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from c in db.Groups
+                        from gcr in db.GCR.Where(p => p.ContactId == Id && p.GroupId == c.Id)
+                        select c).Distinct().ToList();
+            }
         }
     }
 }

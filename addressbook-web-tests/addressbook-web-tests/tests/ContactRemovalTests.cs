@@ -17,15 +17,14 @@ namespace WebAddressbookTests
             {
                 app.Contacts.Create(new ContactData("Fedor", "Fedorov"));
             }
-            List<ContactData> oldContacts = app.Contacts.GetContactList();
-
-            app.Contacts.Remove(0);
+            List<ContactData> oldContacts = ContactData.GetAll();
+            ContactData toBeRemoved = oldContacts[0];
+            app.Contacts.Remove(toBeRemoved);
 
             Assert.AreEqual(oldContacts.Count - 1, app.Contacts.GetContactCount());
 
-            List<ContactData> newContacts = app.Contacts.GetContactList();
+            List<ContactData> newContacts = ContactData.GetAll();
 
-            ContactData toBeRemoved = oldContacts[0];
             oldContacts.RemoveAt(0);
 
             Assert.AreEqual(oldContacts, newContacts);
